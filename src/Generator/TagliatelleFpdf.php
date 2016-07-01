@@ -77,11 +77,13 @@ class TagliatelleFpdf extends FPDF
             );
         $code='101';
         $p=$parities[$barcode[0]];
-        for($i=1;$i<=6;$i++)
+        for ($i=1;$i<=6;$i++) {
             $code.=$codes[$p[$i-1]][$barcode[$i]];
+        }
         $code.='01010';
-        for($i=7;$i<=12;$i++)
+        for($i=7;$i<=12;$i++) {
             $code.=$codes['C'][$barcode[$i]];
+        }
         $code.='101';
         //Draw bars
         for($i=0;$i<strlen($code);$i++)
@@ -90,7 +92,7 @@ class TagliatelleFpdf extends FPDF
                 $this->Rect($x+$i*$w,$y,$w,$h,'F');
         }
         //Print text under barcode
-        $this->SetFont('Arial','',12);
-        $this->Text($x,$y+$h+11/$this->k,substr($barcode,-$len));
+        //$this->SetFont('Arial','',12);
+        //$this->Text($x,$y+$h+11/$this->k,substr($barcode,-$len));
     }
 }
