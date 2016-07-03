@@ -1,5 +1,7 @@
 # Created by http://www.gitignore.io
 
+output.pdf
+
 secure/
 ### Eclipse ###
 *.pydevproject

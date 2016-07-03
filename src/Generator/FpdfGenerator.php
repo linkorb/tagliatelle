@@ -5,7 +5,7 @@ namespace Tagliatelle\Generator;
 use Tagliatelle\Model\Page;
 use Tagliatelle\Model\Template;
 use Tagliatelle\Generator\TagliatelleFpdf;
-
+use RuntimeException;
 
 class FpdfGenerator
 {
@@ -14,6 +14,7 @@ class FpdfGenerator
         $pdf = new TagliatelleFpdf('P', 'mm', 'A4');
         $pdf->AddPage();
         $pdf->SetFont('Arial', 'B', 16);
+        $pdf->SetMargins(0, 0, 0, 0);
         $pdf->SetAutoPageBreak(false);
         
         foreach ($records as $record) {
@@ -40,9 +41,7 @@ class FpdfGenerator
             }
         }
         
-        $data = $pdf->Output('/tmp/doc.pdf');
-        //echo "DATA:" . $data . ":END\n";
-        //file_put_contents('/tmp/doc.pdf', $data);
+        return $pdf->Output(null, 'S');
     }
     
     public function renderTextBlock($block, Page $page, TagliatelleFpdf $pdf, $label, $record)
@@ -52,16 +51,28 @@ class FpdfGenerator
         $pdf->SetXY($x, $y);
         
         $pdf->SetFont('Arial', 'B', 16);
-        $pdf->Cell(0, 0, $block->getContent(), 0);
+        $content = $this->processContent($block->getContent(), $record);
+        $pdf->Cell(0, 0, $content, 0);
     }
     
     public function renderEan13Block($block, Page $page, TagliatelleFpdf $pdf, $label, $record)
     {
         $x = $page->getLabelX($label) + $block->getX();
         $y = $page->getLabelY($label) + $block->getY();
-        $code = $block->getContent();
-        $code = '123456';
-        $pdf->SetFont('Arial', 'B', 10);
-        $pdf->Ean13($x, $y, $code, $block->getHeight(), (double)$block->getWidth());
+
+
+        $content = $this->processContent($block->getContent(), $record);
+        if (!$content || !is_numeric($content)) {
+            throw new RuntimeException("Barcode content invalid: $content");
+        }
+        $pdf->Ean13($x, $y, $content, $block->getHeight(), (double)$block->getWidth());
+    }
+    
+    public function processContent($content, $record)
+    {
+        foreach ($record as $key => $value) {
+            $content = str_replace('{{' . $key . '}}', $value, $content);
+        }
+        return $content;
     }
 }

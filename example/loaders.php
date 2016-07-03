@@ -5,128 +5,19 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 use Tagliatelle\Generator\FpdfGenerator;
 use Tagliatelle\Loader\XmlTemplateLoader;
 use Tagliatelle\Loader\XmlPageLoader;
+use Tagliatelle\Loader\CsvDataLoader;
 
 $templateLoader = new XmlTemplateLoader();
-$template = $templateLoader->loadFile(__DIR__ . '/loaders.template.xml');
+$template = $templateLoader->loadFile(__DIR__ . '/template.xml');
 
 $pageLoader = new XmlPageLoader();
-$page = $pageLoader->loadFile(__DIR__ . '/loaders.page.xml');
+$page = $pageLoader->loadFile(__DIR__ . '/page.xml');
 
-$rows = [
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    [
-        'name' => 'Alice',
-        'nr' => '67890'
-    ],
-    [
-        'name' => 'Bob',
-        'nr' => '12345'
-    ],
-    
-];
+$dataLoader = new CsvDataLoader();
+$rows = $dataLoader->loadFile(__DIR__ . '/data.csv');
 
 $generator = new FpdfGenerator();
-$fpdf = $generator->generate($page, $template, $rows, 0);
+
+$pdf = $generator->generate($page, $template, $rows, 0);
+
+file_put_contents('output.pdf', $pdf);

@@ -1,0 +1,30 @@
+#!/usr/bin/env php
+<?php
+
+require_once(__DIR__ . '/../vendor/autoload.php');
+
+use Tagliatelle\Generator\FpdfGenerator;
+use Tagliatelle\Loader\XmlTemplateLoader;
+use Tagliatelle\Loader\XmlPageLoader;
+use Tagliatelle\Loader\CsvDataLoader;
+
+if (count($argv)!=5) {
+    echo "Usage: tagliatelle TEMPLATEFILE PAGEFILE DATAFILE PDFFILE\n";
+    exit(-1);
+}
+
+
+$templateLoader = new XmlTemplateLoader();
+$template = $templateLoader->loadFile($argv[1]);
+
+$pageLoader = new XmlPageLoader();
+$page = $pageLoader->loadFile($argv[2]);
+
+$dataLoader = new CsvDataLoader();
+$rows = $dataLoader->loadFile($argv[3]);
+
+$generator = new FpdfGenerator();
+
+$startLabel = 0;
+$pdf = $generator->generate($page, $template, $rows, $startLabel);
+file_put_contents($argv[4], $pdf);

@@ -30,8 +30,13 @@ $rows = [
     [
         'name' => 'Bob',
         'nr' => '12345'
+    ],
+    [
+        'name' => 'Carol',
+        'nr' => '98989'
     ]
 ];
 
 $generator = new FpdfGenerator();
-$fpdf = $generator->generate($page, $template, $rows);
+$data = $generator->generate($page, $template, $rows);
+file_put_contents('output.pdf', $pdf);
